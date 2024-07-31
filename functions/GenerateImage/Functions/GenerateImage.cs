@@ -48,7 +48,7 @@ namespace GenerateImage.Functions
     {
 
 
-        [CosmosDBOutput(databaseName: "platform-engineering", containerName: "image-entry", Connection = "AZURE_COSMOSDB_CONNECTION_STRING")]
+        [CosmosDBOutput(databaseName: "stu-kickoff", containerName: "image-entry", Connection = "AZURE_COSMOSDB_CONNECTION_STRING")]
 
         public required ImageEntry ImageEntry { get; set; }
 
