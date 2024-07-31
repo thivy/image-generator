@@ -1,6 +1,7 @@
 using GenerateImage.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using System.Text.Json.Serialization;
 
 namespace GenerateImage.Functions
 {
@@ -21,27 +22,38 @@ namespace GenerateImage.Functions
         }
 
         [Function(nameof(GenerateImage))]
-        public async Task<Output> Run([QueueTrigger("img")] string message)
+        public async Task<Output> Run([QueueTrigger("img")] string input)
         {
-            string id = Guid.NewGuid().ToString();
-            _logger.LogInformation($"C# Queue trigger function processed: {message}");
 
-            string imagePrompt = await _azureOpenAIService.GenerateImagePrompt(message);
-            byte[] imageBytes = await _azureOpenAIService.GenerateImageFromPrompt(imagePrompt);
-            await _imageStorageService.UploadImageAsync(imageBytes, $"{id}.png");
+            //Input input = JsonSerializer.Deserialize<Input>(message);
+
+            //_logger.LogInformation($"C# Queue trigger function processed: {message}");
+
+            string imagePrompt = await _azureOpenAIService.GenerateImagePrompt("dog");
+            //byte[] imageBytes = await _azureOpenAIService.GenerateImageFromPrompt(imagePrompt);
+            //await _imageStorageService.UploadImageAsync(imageBytes, $"{input.Id}.png");
 
             return new Output
             {
                 ImageEntry = new ImageEntry
                 {
-                    Id = id,
+                    Id = "",
                     ImagePrompt = imagePrompt,
-                    ImageId = id,
+                    ImageId = "",
                     UserId = "user"
                 }
             };
         }
 
+    }
+
+    public class Input
+    {
+        [JsonPropertyName("id")]
+        public required string Id { get; set; }
+
+        [JsonPropertyName("prompt")]
+        public required string Prompt { get; set; }
     }
 
     public class Output
