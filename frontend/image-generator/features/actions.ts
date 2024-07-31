@@ -21,7 +21,6 @@ export async function generateImage(
   }
 
   const connection = process.env.AZURE_STORAGE_CONNECTION_STRING!;
-  console.log(connection);
   const queueServiceClient =
     QueueServiceClient.fromConnectionString(connection);
 
