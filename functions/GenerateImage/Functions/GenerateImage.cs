@@ -22,24 +22,22 @@ namespace GenerateImage.Functions
         }
 
         [Function(nameof(GenerateImage))]
-        public async Task<Output> Run([QueueTrigger("img")] string input)
+        public async Task<Output> Run([QueueTrigger("img")] Input input)
         {
 
-            //Input input = JsonSerializer.Deserialize<Input>(message);
 
             //_logger.LogInformation($"C# Queue trigger function processed: {message}");
 
-            string imagePrompt = await _azureOpenAIService.GenerateImagePrompt("dog");
-            //byte[] imageBytes = await _azureOpenAIService.GenerateImageFromPrompt(imagePrompt);
-            //await _imageStorageService.UploadImageAsync(imageBytes, $"{input.Id}.png");
+            string imagePrompt = await _azureOpenAIService.GenerateImagePrompt(input.Prompt);
+            byte[] imageBytes = await _azureOpenAIService.GenerateImageFromPrompt(imagePrompt);
+            await _imageStorageService.UploadImageAsync(imageBytes, $"{input.Id}.png");
 
             return new Output
             {
                 ImageEntry = new ImageEntry
                 {
-                    Id = "",
+                    Id = input.Id,
                     ImagePrompt = imagePrompt,
-                    ImageId = "",
                     UserId = "user"
                 }
             };

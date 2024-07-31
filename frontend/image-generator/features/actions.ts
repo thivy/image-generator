@@ -33,7 +33,11 @@ export async function generateImage(
 
   const message = JSON.stringify(input);
 
-  await queueClient.sendMessage(message);
+  const encoder = new TextEncoder();
+  const encodedMessage = encoder.encode(message);
+  const encodedMessageString = Buffer.from(encodedMessage).toString("base64");
+
+  await queueClient.sendMessage(encodedMessageString);
 
   return {
     id: input.id,
