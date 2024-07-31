@@ -1,0 +1,17 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_INPROC_NET8_ENABLED": "1",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+
+    "AZURE_STORAGE:CONTAINER": "images",
+
+    "AZURE_COSMOSDB_CONNECTION_STRING": "",
+
+    "AZURE_OPENAI:API_KEY": "",
+    "AZURE_OPENAI:ENDPOINT": "",
+    "AZURE_OPENAI:DEPLOYMENT_NAME": "",
+    "AZURE_OPENAI:IMAGE_DEPLOYMENT_NAME": ""
+  }
+}
