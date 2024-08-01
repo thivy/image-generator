@@ -16,9 +16,6 @@ env:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: functions/generateimage
     permissions:
       id-token: write #This is required for requesting the JWT
 
