@@ -23,6 +23,7 @@ const loadImage = async (url: string) => {
 
     if (state === "loading") {
       await timeout(2000);
+      console.log("retrying");
       return await loadImage(url);
     }
   } catch (e) {
