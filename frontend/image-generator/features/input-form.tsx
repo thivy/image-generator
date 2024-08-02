@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { PropsWithChildren } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { generateImage } from "./actions";
@@ -13,12 +12,7 @@ const initialState = {
 
 export const InputForm = (props: PropsWithChildren) => {
   const { loadingState } = useLoading();
-  const router = useRouter();
   const [formState, formAction] = useFormState(generateImage, initialState);
-
-  if (formState.id.length > 0) {
-    router.push(`/image/${formState.id}`);
-  }
 
   return (
     <form action={formAction} className="max-h-screen h-screen relative ">

@@ -1,6 +1,7 @@
 "use server";
 import { QueueServiceClient } from "@azure/storage-queue";
 import { nanoid } from "nanoid";
+import { redirect } from "next/navigation";
 
 export interface InputState {
   id: string;
@@ -38,6 +39,10 @@ export async function generateImage(
   const encodedMessageString = Buffer.from(encodedMessage).toString("base64");
 
   await queueClient.sendMessage(encodedMessageString);
+
+  if (input.id) {
+    redirect(`/image/${input.id}`);
+  }
 
   return {
     id: input.id,
