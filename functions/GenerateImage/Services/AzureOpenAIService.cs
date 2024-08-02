@@ -28,8 +28,15 @@ namespace GenerateImage.Services
 
             ChatClient chatClient = azureOpenAIClient.GetChatClient(openAISettings.DEPLOYMENT_NAME);
 
-            ChatMessage chatMessage = new SystemChatMessage("You are an expert in writing prompts for DALLE Image generation. Rewrite this prompt so it looks like a Disney movie.");
-            ChatMessage useMessage = new UserChatMessage(userPrompt);
+            ChatMessage chatMessage = new SystemChatMessage("" +
+                "You are an expert in writing prompts for DALLE Image generation. " +
+                "First, extract the character the user is asking you to create." +
+                "Second, extract the unique attributes of the character. " +
+                "Finally, re-write a new prompt using the template below and ensuring to capture the character clearly along with it's attributes." +
+                "<template> " +
+                "Create a highly detailed, isometric Minecraft-style rendering of a [character] as a Minecraft character. Transform the [character] into a blocky, pixelated figure while preserving its iconic shape and expressive features, such as its large, friendly eyes, and distinctive traits.\r\n\r\nThe background should be a clean, plain white to keep the focus solely on the [character] without any distractions." +
+                "<template>");
+            ChatMessage useMessage = new UserChatMessage(userPrompt + "Rewrite this prompt and ensure you capture the character and the attributes clearly.");
 
             ClientResult<ChatCompletion> response = await chatClient.CompleteChatAsync([chatMessage, useMessage]);
             string imagePrompt = response.Value.Content[0].Text;
