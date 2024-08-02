@@ -15,7 +15,7 @@ export const InputForm = (props: PropsWithChildren) => {
   const [formState, formAction] = useFormState(generateImage, initialState);
 
   return (
-    <form action={formAction} className="max-h-screen h-screen relative ">
+    <form action={formAction} className="h-dvh relative ">
       {props.children}
       <div className="absolute bottom-0 left-0 w-full p-4 ">
         <div className="container mx-auto max-w-md flex items-center relative">

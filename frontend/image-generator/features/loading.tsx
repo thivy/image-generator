@@ -1,10 +1,6 @@
 "use client";
 
-import { useLoading } from "@/features/app-context";
-
 export default function Loading() {
-  const { setState } = useLoading();
-  setState("loading");
   return (
     <main className="flex-col min-h-screen flex items-center justify-center">
       <div className="rounded-2xl aspect-square shadow-md border-2 border-slate-50 w-full overflow-hidden relative">

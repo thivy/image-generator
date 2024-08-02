@@ -1,3 +1,3 @@
 export default function Home() {
-  return <main className="">Upload Image</main>;
+  return <main className="">Upload Image 2</main>;
 }

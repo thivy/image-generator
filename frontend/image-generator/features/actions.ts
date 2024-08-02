@@ -49,3 +49,32 @@ export async function generateImage(
     error: "",
   };
 }
+
+export const loadImageFromServer = async (id: string) => {
+  const imageUrl = `https://image-gen.azureedge.net/images/${id}.png`;
+
+  try {
+    const response = await fetch(imageUrl, {
+      mode: "no-cors",
+      cache: "no-cache",
+    });
+
+    if (response.ok) {
+      return {
+        state: "success",
+        imageUrl,
+      };
+    } else {
+      return {
+        state: "loading",
+        imageUrl: "",
+      };
+    }
+  } catch (e) {
+    console.error(e);
+    return {
+      state: "error",
+      imageUrl: "",
+    };
+  }
+};

@@ -1,6 +1,7 @@
 "use client";
-import { ImageLoadingState } from "@/app/image/[id]/page";
 import React, { createContext, ReactNode, useContext, useState } from "react";
+
+export type ImageLoadingState = "loading" | "success" | "error";
 
 interface LoadingContextProps {
   loadingState: ImageLoadingState;

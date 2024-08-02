@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} container mx-auto max-w-4xl bg-slate-100 px-4`}
+        className={`${inter.className} container mx-auto max-w-4xl bg-slate-100 px-4 overflow-hidden h-dvh`}
       >
         <LoadingProvider>
           <InputForm> {children}</InputForm>
