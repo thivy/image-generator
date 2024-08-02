@@ -1,4 +1,4 @@
-import { ImageUI } from "./image-ui";
+import { ImageUI } from "../../../features/image-ui";
 
 interface ImageProps {
   params: {
