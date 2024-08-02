@@ -51,7 +51,7 @@ export async function generateImage(
 }
 
 export const loadImageFromServer = async (id: string) => {
-  const imageUrl = `https://image-gen.azureedge.net/images/${id}.png`;
+  const imageUrl = `https://image-gen.azureedge.net/images/${id}.png?${process.env.AZURE_STORAGE_SAAS}`;
 
   try {
     const response = await fetch(imageUrl, {
