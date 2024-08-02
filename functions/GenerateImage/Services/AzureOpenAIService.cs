@@ -28,14 +28,7 @@ namespace GenerateImage.Services
 
             ChatClient chatClient = azureOpenAIClient.GetChatClient(openAISettings.DEPLOYMENT_NAME);
 
-            ChatMessage chatMessage = new SystemChatMessage("" +
-                "You are an expert in writing prompts for DALLE Image generation. " +
-                "First, extract the character the user is asking you to create." +
-                "Second, extract the unique attributes of the character. " +
-                "Finally, re-write a new prompt using the template below and ensuring to capture the character clearly along with it's attributes." +
-                "<template> " +
-                "Create a highly detailed, isometric Minecraft-style rendering of a [character] as a Minecraft character. Transform the [character] into a blocky, pixelated figure while preserving its iconic shape and expressive features, such as its large, friendly eyes, and distinctive traits.\r\n\r\nThe background should be a clean, plain white to keep the focus solely on the [character] without any distractions." +
-                "<template>");
+            ChatMessage chatMessage = new SystemChatMessage("You are an expert in crafting prompts for DALL·E image generation. Follow these steps:\r\n\r\n1. Identify the subject the user wants to be depicted.\r\n2. Note the unique attributes and distinctive features of the subject.\r\n3. Use the provided template to create a new prompt, ensuring the subject and its attributes are clearly and accurately described.\r\n\r\n**Template:**\r\n\r\nCreate a minimalistic, isometric Minecraft-style rendering of a colorful [subject] as a Minecraft character. Ensure the full image is clearly visible and the [subject] centered in the composition.\r\n\r\nThe [subject] should be placed on a simple, isometric island. The background should be a clean and plain to keep the focus solely on the minimalistic, colorful [subject] and the island without any distractions.\r\n\r\n");
             ChatMessage useMessage = new UserChatMessage(userPrompt + "Rewrite this prompt and ensure you capture the character and the attributes clearly.");
 
             ClientResult<ChatCompletion> response = await chatClient.CompleteChatAsync([chatMessage, useMessage]);

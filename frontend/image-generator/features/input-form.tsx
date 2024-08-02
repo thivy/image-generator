@@ -23,6 +23,7 @@ export const InputForm = (props: PropsWithChildren) => {
           <input
             name="prompt"
             type="text"
+            maxLength={100}
             disabled={loadingState === "loading"}
             placeholder="What do you want to generate?"
             className="text-slate-50 text-base md:text-base flex h-9 w-full rounded-full border border-slate-700 bg-slate-600 autofill:bg-yellow-200 p-7 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50 "
