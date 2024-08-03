@@ -4,6 +4,7 @@ import { PropsWithChildren } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { generateImage } from "./actions";
 import { useLoading } from "./app-context";
+import { AppHeader } from "./app-header";
 
 const initialState = {
   id: "",
@@ -15,9 +16,10 @@ export const InputForm = (props: PropsWithChildren) => {
   const [formState, formAction] = useFormState(generateImage, initialState);
 
   return (
-    <form action={formAction} className="h-dvh relative ">
+    <form action={formAction} className="h-dvh relative flex flex-col">
+      <AppHeader />
       {props.children}
-      <div className="absolute bottom-0 left-0 w-full p-4 ">
+      <div className=" p-4 ">
         <div className="container mx-auto max-w-md flex items-center relative">
           {/* <div>{state.error.length > 0 ? state.error : ""}</div> */}
           <input

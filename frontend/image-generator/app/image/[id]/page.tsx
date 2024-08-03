@@ -8,7 +8,7 @@ interface ImageProps {
 
 export default function ImageHome(props: ImageProps) {
   return (
-    <div className="flex min-h-dvh  flex-col overflow-hidden">
+    <div className="flex flex-1 items-center justify-center flex-col ">
       <ImageUI imageId={props.params.id} />
     </div>
   );
