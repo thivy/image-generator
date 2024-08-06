@@ -1,9 +1,35 @@
+import { auth } from "@/auth";
 import Link from "next/link";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactNode } from "react";
+import { SignOutWithLinkedIn } from "./auth";
 
+export const Avatar = async () => {
+  const session = await auth();
+
+  let node: ReactNode = null;
+
+  if (session === null || session.user === undefined) {
+    node = null;
+  } else {
+    node = (
+      <>
+        <img
+          src={session.user.image ?? ""}
+          alt="User Avatar"
+          className="size-6 rounded-full"
+        />
+        <SignOutWithLinkedIn />
+      </>
+    );
+  }
+
+  return (
+    <div className="text-sm flex gap-2 text-slate-400 items-center">{node}</div>
+  );
+};
 export const AppHeader = () => {
   return (
-    <div className="container mx-auto max-w-4xl py-3">
+    <div className="container mx-auto max-w-4xl py-6 flex justify-between">
       <HeaderButton href="/">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +52,8 @@ export const AppHeader = () => {
           />
         </svg>
         Home
-      </HeaderButton>
+      </HeaderButton>{" "}
+      <Avatar />
     </div>
   );
 };

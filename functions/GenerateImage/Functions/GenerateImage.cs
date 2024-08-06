@@ -24,23 +24,45 @@ namespace GenerateImage.Functions
         [Function(nameof(GenerateImage))]
         public async Task<Output> Run([QueueTrigger("img")] Input input)
         {
-
-
-            //_logger.LogInformation($"C# Queue trigger function processed: {message}");
-
-            string imagePrompt = await _azureOpenAIService.GenerateImagePrompt(input.Prompt);
-            byte[] imageBytes = await _azureOpenAIService.GenerateImageFromPrompt(imagePrompt);
-            await _imageStorageService.UploadImageAsync(imageBytes, $"{input.Id}.png");
-
-            return new Output
+            try
             {
-                ImageEntry = new ImageEntry
+                _logger.LogInformation($"C# Queue trigger function processed: {input}");
+                string imagePrompt = await _azureOpenAIService.GenerateImagePrompt(input.Prompt);
+                byte[] imageBytes = await _azureOpenAIService.GenerateImageFromPrompt(imagePrompt);
+                await _imageStorageService.UploadImageAsync(imageBytes, $"{input.Id}.png");
+
+                return new Output
                 {
-                    Id = input.Id,
-                    ImagePrompt = imagePrompt,
-                    UserId = "user"
-                }
-            };
+                    ImageEntry = new ImageEntry
+                    {
+                        Id = input.Id,
+                        ImagePrompt = imagePrompt,
+                        UserId = input.User,
+                        Status = StatusEnum.Success,
+                        UserName = input.User,
+                        userPrompt = input.Prompt
+                    }
+                };
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error processing queue message");
+
+                return new Output
+                {
+                    ImageEntry = new ImageEntry
+                    {
+                        Id = input.Id,
+                        ImagePrompt = "",
+                        UserId = input.User,
+                        Status = StatusEnum.Error,
+                        ErrorMessage = e.Message,
+                        UserName = input.User,
+                        userPrompt = input.Prompt
+                    }
+                };
+            }
+
         }
 
     }
@@ -52,6 +74,9 @@ namespace GenerateImage.Functions
 
         [JsonPropertyName("prompt")]
         public required string Prompt { get; set; }
+
+        [JsonPropertyName("user")]
+        public required string User { get; set; }
     }
 
     public class Output

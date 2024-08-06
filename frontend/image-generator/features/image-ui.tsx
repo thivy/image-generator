@@ -44,7 +44,7 @@ export const ImageUI = (props: ImageProps) => {
   }
 
   return (
-    <main className="flex-col flex items-center justify-center p-3">
+    <main className="flex-col flex items-center justify-center">
       <img
         src={imageState}
         className="rounded-2xl w-full max-h-[80dvh] shadow-md border-2 border-slate-50"
