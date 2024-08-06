@@ -1,46 +1,53 @@
 "use client";
 
-import { loadImageFromServer } from "@/features/actions";
+import { ImageLoadingState, loadImageFromServer } from "@/features/actions";
 import { useLoading } from "@/features/app-context";
-import Loading from "@/features/loading";
 import { useEffect, useState } from "react";
+import { Loading, ShowError } from "./loading";
 
 interface ImageProps {
   imageId: string;
 }
 
 export const ImageUI = (props: ImageProps) => {
-  const { setState, loadingState } = useLoading();
+  const { setState, loadingState, setErrorMessage } = useLoading();
   const [imageState, setImageState] = useState("");
 
   useEffect(() => {
-    const loadImage = async () => {
-      setState("loading");
+    const loadImage = async (lastState: ImageLoadingState) => {
+      setState(lastState);
 
       try {
         const response = await loadImageFromServer(props.imageId);
+        setState(response.state);
 
-        if (response.state === "success") {
+        if (response.state === "Success") {
           setImageState(response.imageUrl);
-          setState("success");
+        } else if (response.state === "Error") {
+          setErrorMessage(
+            response.error ?? "There was an error loading the image"
+          );
         } else {
-          await timeout(1000);
-          return await loadImage();
+          await timeout(3000);
+          return await loadImage(response.state);
         }
       } catch (e) {
         console.error(e);
-        setState("error");
       }
     };
 
     const timeout = (ms: number) =>
       new Promise((resolve) => setTimeout(resolve, ms));
 
-    loadImage();
+    loadImage("Pending");
   }, [props.imageId, setState]);
 
-  if (loadingState === "loading") {
+  if (loadingState === "Pending" || loadingState === "Processing") {
     return <Loading />;
+  }
+
+  if (loadingState === "Error") {
+    return <ShowError />;
   }
 
   return (

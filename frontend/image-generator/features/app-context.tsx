@@ -1,11 +1,12 @@
 "use client";
 import React, { createContext, ReactNode, useContext, useState } from "react";
-
-export type ImageLoadingState = "loading" | "success" | "error";
+import { ImageLoadingState } from "./actions";
 
 interface LoadingContextProps {
   loadingState: ImageLoadingState;
   setState: React.Dispatch<React.SetStateAction<ImageLoadingState>>;
+  errorMessage: string;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const LoadingContext = createContext<LoadingContextProps | undefined>(
@@ -15,10 +16,13 @@ const LoadingContext = createContext<LoadingContextProps | undefined>(
 export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [state, setState] = useState<ImageLoadingState>("success");
+  const [state, setState] = useState<ImageLoadingState>("Success");
 
+  const [errorMessage, setErrorMessage] = useState("");
   return (
-    <LoadingContext.Provider value={{ loadingState: state, setState }}>
+    <LoadingContext.Provider
+      value={{ loadingState: state, setState, errorMessage, setErrorMessage }}
+    >
       {children}
     </LoadingContext.Provider>
   );

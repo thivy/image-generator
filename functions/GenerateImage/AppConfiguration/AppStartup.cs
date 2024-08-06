@@ -1,4 +1,5 @@
 ﻿using GenerateImage.Services;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
@@ -47,6 +48,11 @@ namespace GenerateImage.AppConfiguration
 
                 services.AddScoped<AzureOpenAIService>();
                 services.AddScoped<ImageStorageService>();
+
+
+                string? connectionString = hostContext.Configuration.GetValue<string>("AZURE_COSMOSDB_CONNECTION_STRING");
+                CosmosClient cosmosClient = new CosmosClient(connectionString);
+                services.AddSingleton(cosmosClient);
 
                 services.AddApplicationInsightsTelemetryWorkerService();
                 services.ConfigureFunctionsApplicationInsights();

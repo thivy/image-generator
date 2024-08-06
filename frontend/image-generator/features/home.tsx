@@ -88,7 +88,7 @@ const UnauthenticatedHome = () => {
         Hello, <span className="text-blue-400"> Friend </span>
       </p>
       <p className="text-lg tracking-tight text-slate-600 font-light">
-        I can help you create an image for you! But, first, sign in with
+        I can help you create a masterpiece for you! But, first, sign in with
         LinkedIn to get started!
       </p>
 

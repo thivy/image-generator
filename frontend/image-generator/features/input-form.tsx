@@ -11,19 +11,24 @@ const initialState = {
 };
 
 export const InputForm = (props: PropsWithChildren) => {
-  const { loadingState } = useLoading();
+  const { loadingState, setErrorMessage } = useLoading();
   const [formState, formAction] = useFormState(generateImage, initialState);
+
+  const disabled = loadingState === "Pending" || loadingState === "Processing";
+
+  if (formState && formState.error.length > 0) {
+    alert(formState.error);
+  }
 
   return (
     <form action={formAction} className="relative flex flex-col  p-4 ">
       {props.children}
       <div className="container mx-auto max-w-md flex items-center relative">
-        {/* <div>{state.error.length > 0 ? state.error : ""}</div> */}
         <input
           name="prompt"
           type="text"
           maxLength={100}
-          disabled={loadingState === "loading"}
+          disabled={disabled}
           placeholder="What do you want to generate?"
           className="text-slate-50 text-base md:text-base flex h-9 w-full rounded-full border border-slate-700 bg-slate-600  p-7 pr-14 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50 "
         />
@@ -91,13 +96,16 @@ export const SubmitButton = () => {
     </>
   );
 
+  const isDisabled =
+    pending || loadingState === "Pending" || loadingState === "Processing";
+
   return (
     <button
       type="submit"
-      disabled={pending || loadingState === "loading"}
+      disabled={isDisabled}
       className="size-12 bg-slate-800 flex items-center justify-center absolute right-1 rounded-full"
     >
-      {loadingState === "loading" ? LoadingSpinner : DefaultButtonIcon}
+      {isDisabled ? LoadingSpinner : DefaultButtonIcon}
     </button>
   );
 };

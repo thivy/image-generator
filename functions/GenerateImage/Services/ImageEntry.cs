@@ -1,32 +1,31 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace GenerateImage.Services
 {
     public class ImageEntry
     {
 
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public required string Id { get; set; }
 
-        [JsonPropertyName("userPrompt")]
-        public required string userPrompt { get; set; }
+        [JsonProperty("userPrompt")]
+        public required string UserPrompt { get; set; }
 
-        [JsonPropertyName("imagePrompt")]
+        [JsonProperty("imagePrompt")]
         public required string ImagePrompt { get; set; }
 
-        [JsonPropertyName("userId")]
+        [JsonProperty("userId")]
         public required string UserId { get; set; }
-        [JsonPropertyName("userName")]
-        public required string UserName { get; set; }
 
-        [JsonPropertyName("status")]
-        [JsonConverter(typeof(JsonStringEnumConverter))]
+        [JsonProperty("status")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public required StatusEnum Status { get; set; }
 
-        [JsonPropertyName("errorMessage")]
-        public string? ErrorMessage { get; set; }
-    }
+        [JsonProperty("errorMessage")]
+        public required string ErrorMessage { get; set; }
 
+    }
     public enum StatusEnum
     {
         Pending,

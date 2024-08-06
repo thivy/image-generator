@@ -1,7 +1,7 @@
 using GenerateImage.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace GenerateImage.Functions
 {
@@ -22,61 +22,57 @@ namespace GenerateImage.Functions
         }
 
         [Function(nameof(GenerateImage))]
-        public async Task<Output> Run([QueueTrigger("img")] Input input)
+        public async Task Run([QueueTrigger("img")] Input input)
         {
+
+            ImageEntry imageEntry = new ImageEntry
+            {
+                Id = input.Id,
+                ImagePrompt = "",
+                UserId = input.UserId,
+                Status = StatusEnum.Processing,
+                UserPrompt = input.UserPrompt,
+                ErrorMessage = ""
+            };
+
             try
             {
+
+                await _imageStorageService.UpsertImageEntry(imageEntry);
+
                 _logger.LogInformation($"C# Queue trigger function processed: {input}");
-                string imagePrompt = await _azureOpenAIService.GenerateImagePrompt(input.Prompt);
+                string imagePrompt = await _azureOpenAIService.GenerateImagePrompt(input.UserPrompt);
                 byte[] imageBytes = await _azureOpenAIService.GenerateImageFromPrompt(imagePrompt);
                 await _imageStorageService.UploadImageAsync(imageBytes, $"{input.Id}.png");
 
-                return new Output
-                {
-                    ImageEntry = new ImageEntry
-                    {
-                        Id = input.Id,
-                        ImagePrompt = imagePrompt,
-                        UserId = input.User,
-                        Status = StatusEnum.Success,
-                        UserName = input.User,
-                        userPrompt = input.Prompt
-                    }
-                };
+                imageEntry.Status = StatusEnum.Success;
+                imageEntry.ImagePrompt = imagePrompt;
+
+                await _imageStorageService.UpsertImageEntry(imageEntry);
+
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error processing queue message");
+                imageEntry.Status = StatusEnum.Error;
+                imageEntry.ErrorMessage = e.Message;
+                await _imageStorageService.UpsertImageEntry(imageEntry);
 
-                return new Output
-                {
-                    ImageEntry = new ImageEntry
-                    {
-                        Id = input.Id,
-                        ImagePrompt = "",
-                        UserId = input.User,
-                        Status = StatusEnum.Error,
-                        ErrorMessage = e.Message,
-                        UserName = input.User,
-                        userPrompt = input.Prompt
-                    }
-                };
             }
 
         }
-
     }
 
     public class Input
     {
-        [JsonPropertyName("id")]
+        [JsonProperty("id")]
         public required string Id { get; set; }
 
-        [JsonPropertyName("prompt")]
-        public required string Prompt { get; set; }
+        [JsonProperty("userPrompt")]
+        public required string UserPrompt { get; set; }
 
-        [JsonPropertyName("user")]
-        public required string User { get; set; }
+        [JsonProperty("userId")]
+        public required string UserId { get; set; }
     }
 
     public class Output

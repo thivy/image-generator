@@ -19,7 +19,7 @@ export async function generateImage(
   if (prompt === "" || !prompt) {
     return {
       id: "",
-      error: "Prompt cannot be empty",
+      error: "Come on, you need to enter a prompt!",
     };
   }
 
@@ -39,10 +39,11 @@ export async function generateImage(
   const queueClient = queueServiceClient.getQueueClient("img");
 
   const input: ImageEntry = {
-    prompt,
+    userPrompt: prompt,
     status: "Pending",
-    user: session.user.name!,
+    userId: session.user.name!,
     id: nanoid(),
+    imagePrompt: "",
   };
 
   const message = JSON.stringify(input);
@@ -80,55 +81,25 @@ export const loadImageFromServer = async (
 
     if (image.length === 0) {
       return {
-        state: "Pending",
+        state: "Error",
         imageUrl: "",
+        error: "Ah snap! We couldn't find the image you were looking for",
       };
     }
 
     const entry = image[0];
 
-    if (entry.status === "Pending") {
-      return {
-        state: "Pending",
-        imageUrl: "",
-      };
-    }
-
-    if (entry.status === "Processing") {
-      return {
-        state: "Processing",
-        imageUrl: "",
-      };
-    }
-
-    if (entry.status === "Error") {
-      return {
-        state: "Error",
-        imageUrl: "",
-        error: entry.errorMessage ?? "There was an error loading the image",
-      };
-    }
-
-    return {
-      state: "Success",
-      imageUrl,
+    let response: ImageResponse = {
+      state: entry.status,
+      imageUrl: entry.status === "Success" ? imageUrl : "",
     };
 
-    // const response = await fetch(imageUrl, {
-    //   mode: "no-cors",
-    //   cache: "no-cache",
-    // });
-    // if (response.ok) {
-    //   return {
-    //     state: "success",
-    //     imageUrl,
-    //   };
-    // } else {
-    //   return {
-    //     state: "loading",
-    //     imageUrl: "",
-    //   };
-    // }
+    if (entry.status === "Error") {
+      response.error =
+        entry.errorMessage ?? "There was an error loading the image";
+    }
+
+    return response;
   } catch (e) {
     console.error(e);
     return {
@@ -170,6 +141,7 @@ export const cosmosContainer = async () => {
 
   const { container } = await database.containers.createIfNotExists({
     id: containerId,
+    partitionKey: "/userId",
   });
 
   return container;
@@ -177,10 +149,11 @@ export const cosmosContainer = async () => {
 
 interface ImageEntry {
   id: string;
-  prompt: string;
-  user: string;
+  userPrompt: string;
+  userId: string;
   status: ImageLoadingState;
   errorMessage?: string;
+  imagePrompt: string;
 }
 
 export type ImageLoadingState = "Pending" | "Processing" | "Success" | "Error";
