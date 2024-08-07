@@ -71,11 +71,32 @@ interface ImageResponse {
   error?: string;
 }
 
+export const getAllImages = async () => {
+  const container = await cosmosContainer();
+
+  const { resources } = await container.items
+    .query<ImageEntry>(
+      {
+        query: "SELECT * from c WHERE c.status = @status",
+        parameters: [{ name: "@status", value: "Success" }],
+      },
+      {
+        maxItemCount: 10000,
+      }
+    )
+    .fetchAll();
+
+  return resources;
+};
+
+export const fullImageUrl = async (id: string) => {
+  const imageUrl = `https://image-gen.azureedge.net/images/${id}.png?${process.env.AZURE_STORAGE_SAAS}`;
+  return imageUrl;
+};
+
 export const loadImageFromServer = async (
   id: string
 ): Promise<ImageResponse> => {
-  const imageUrl = `https://image-gen.azureedge.net/images/${id}.png?${process.env.AZURE_STORAGE_SAAS}`;
-
   try {
     const image = await getImageEntry(id);
 
@@ -91,7 +112,7 @@ export const loadImageFromServer = async (
 
     let response: ImageResponse = {
       state: entry.status,
-      imageUrl: entry.status === "Success" ? imageUrl : "",
+      imageUrl: entry.status === "Success" ? await fullImageUrl(id) : "",
     };
 
     if (entry.status === "Error") {
