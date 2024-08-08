@@ -51,7 +51,10 @@ namespace GenerateImage.AppConfiguration
 
 
                 string? connectionString = hostContext.Configuration.GetValue<string>("AZURE_COSMOSDB_CONNECTION_STRING");
-                CosmosClient cosmosClient = new CosmosClient(connectionString);
+                CosmosClient cosmosClient = new CosmosClient(connectionString, new CosmosClientOptions()
+                {
+                    ConsistencyLevel = ConsistencyLevel.Strong
+                });
                 services.AddSingleton(cosmosClient);
 
                 services.AddApplicationInsightsTelemetryWorkerService();
