@@ -21,6 +21,49 @@ namespace GenerateImage.Functions
             _imageStorageService = imageStorageService;
         }
 
+        private async Task ProcessImageEntry(ImageEntry imageEntry)
+        {
+            try
+            {
+                imageEntry.Status = StatusEnum.Processing;
+                await _imageStorageService.UpsertImageEntry(imageEntry);
+
+                _logger.LogInformation($"Processing image entry: {imageEntry.Id}");
+                string imagePrompt = await _azureOpenAIService.GenerateImagePrompt(imageEntry.UserPrompt);
+                byte[] imageBytes = await _azureOpenAIService.GenerateImageFromPrompt(imagePrompt);
+                await _imageStorageService.UploadImageAsync(imageBytes, $"{imageEntry.Id}.png");
+
+                imageEntry.Status = StatusEnum.Success;
+                imageEntry.ImagePrompt = imagePrompt;
+
+                await _imageStorageService.UpsertImageEntry(imageEntry);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error processing image entry");
+                imageEntry.Status = StatusEnum.Error;
+                imageEntry.ErrorMessage = e.Message;
+                await _imageStorageService.UpsertImageEntry(imageEntry);
+            }
+        }
+
+        [Function(nameof(RunOnTimer))]
+        //[FixedDelayRetry(5, "00:00:10")]
+        public async Task RunOnTimer([TimerTrigger("*/15 * * * * *")] TimerInfo timerInfo, FunctionContext context)
+        {
+            List<ImageEntry> items = await _imageStorageService.FindTopItemsToBeProcessed(15);
+
+            // list of promises
+            List<Task> promises = new List<Task>();
+
+            foreach (ImageEntry input in items)
+            {
+                Task promise = ProcessImageEntry(input);
+                promises.Add(promise);
+            }
+            await Task.WhenAll(promises);
+        }
+
         [Function(nameof(GenerateImage))]
         public async Task Run([QueueTrigger("img")] Input input)
         {

@@ -106,7 +106,7 @@ export async function GET(request: Request) {
 
   let promises: Array<Promise<InputState>> = [];
 
-  prompts.map((prompt) => {
+  prompts.slice(0, 5).map((prompt) => {
     const formData = new FormData();
     formData.append("prompt", prompt);
     const promise = generateImage(

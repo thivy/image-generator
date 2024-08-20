@@ -53,7 +53,7 @@ export async function generateImage(
   const encodedMessageString = Buffer.from(encodedMessage).toString("base64");
 
   await saveImageEntry(input);
-  await queueClient.sendMessage(encodedMessageString);
+  // await queueClient.sendMessage(encodedMessageString);
 
   if (input.id) {
     redirect(`/image/${input.id}`);
