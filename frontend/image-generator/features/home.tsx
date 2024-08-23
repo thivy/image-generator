@@ -34,8 +34,7 @@ const AuthenticatedHome = () => {
           Let's create a masterpiece, together!
           <span className="text-2xl">👋</span>
         </span>{" "}
-        Ask me to create a{" "}
-        <span className="text-blue-500">Brown kiwi bird</span>,{" "}
+        Ask me to create a <span className="text-blue-500">Peacock</span>,{" "}
         <span className="text-blue-500">Sydney, Australia</span>,{" "}
         <span className="text-blue-500"> A kangaroo in a backyard </span>, or
         anything you can{" "}
