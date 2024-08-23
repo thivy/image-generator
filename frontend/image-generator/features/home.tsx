@@ -1,39 +1,37 @@
-import { auth } from "@/auth";
-import { Session } from "next-auth";
 import Image from "next/image";
 import { ComponentProps } from "react";
 import { twMerge } from "tailwind-merge";
 import { SignInWithLinkedIn } from "./auth";
 
 export const HomePage = async () => {
-  const session = await auth();
+  // const session = await auth();
 
-  if (session === null || session.user === undefined) {
-    return <UnauthenticatedHome />;
-  }
+  // if (session === null || session.user === undefined) {
+  //   return <UnauthenticatedHome />;
+  // }
 
-  return <AuthenticatedHome session={session} />;
+  return <AuthenticatedHome />;
 };
 
-const AuthenticatedHome = ({ session }: { session: Session }) => {
+const AuthenticatedHome = () => {
   return (
     <div className="flex text-slate-600 justify-center flex-1 flex-col gap-12 text-4xl tracking-tight font-medium leading-normal">
       <p className="flex gap-2 flex-col ">
         Hello,{" "}
         <span className="flex gap-2 items-center">
-          <img
+          {/* <img
             src={session.user?.image ?? ""}
             alt="User Avatar"
             className="size-12 -rotate-12 rounded-md "
           />
           <span className="text-transparent bg-gradient-to-r from-purple-600  to-orange-400 bg-clip-text">
             {session.user?.name}{" "}
-          </span>
+          </span> */}
         </span>
       </p>
       <p className="text-lg tracking-tight text-slate-600 font-light">
         <span className="block text-sm font-normal text-slate-400 mb-2">
-          Let's create a masterpiece, {session.user?.name}{" "}
+          Let's create a masterpiece, together!
           <span className="text-2xl">👋</span>
         </span>{" "}
         Ask me to create a{" "}
@@ -53,9 +51,9 @@ const AuthenticatedHome = ({ session }: { session: Session }) => {
 const HomeSlider = () => {
   return (
     <div className="grid grid-cols-3 my-3">
-      <SliderItem className=" -rotate-12" imageId="nUBmhtz1bqQEjve1y2EiF" />
+      {/* <SliderItem className=" -rotate-12" imageId="nUBmhtz1bqQEjve1y2EiF" />
       <SliderItem className=" rotate-12" imageId="uu_9T9W-l1v9N3iT3yKkk" />
-      <SliderItem className="-rotate-12" imageId="seXhCBAMtz48pmN1JCTeA" />
+      <SliderItem className="-rotate-12" imageId="seXhCBAMtz48pmN1JCTeA" /> */}
     </div>
   );
 };

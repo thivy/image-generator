@@ -1,0 +1,20 @@
+POST https://api-r3.tagalys.com/v1/mpages/_platform/271553691782
+Content-Type: application/json
+
+{
+  "request": ["total",  "details"],
+  "page": 400,
+  "per_page": 100,
+  "product_listing_page_id": 262012141702,
+  "identification": {
+    "client_code": "FAA9741EF5AE9305",
+    "api_key": "806bd0e6ebcd0bbbdca9e7eb6e6136e8",
+    "store_id": 2315124788,
+    "currency": "AUD",
+    "api_client": {
+      "vendor": "tagalys-ui-widgets",
+      "language": "js",
+      "version": "2.0.0-beta1"
+    }
+  }
+}

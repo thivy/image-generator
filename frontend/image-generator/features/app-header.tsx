@@ -1,27 +1,25 @@
-import { auth } from "@/auth";
 import Link from "next/link";
 import { PropsWithChildren, ReactNode } from "react";
-import { SignOutWithLinkedIn } from "./auth";
 
 export const Avatar = async () => {
-  const session = await auth();
+  // const session = await auth();
 
   let node: ReactNode = null;
 
-  if (session === null || session.user === undefined) {
-    node = null;
-  } else {
-    node = (
-      <>
-        <img
-          src={session.user.image ?? ""}
-          alt="User Avatar"
-          className="size-6 rounded-full"
-        />
-        <SignOutWithLinkedIn />
-      </>
-    );
-  }
+  // if (session === null || session.user === undefined) {
+  //   node = null;
+  // } else {
+  //   node = (
+  //     <>
+  //       <img
+  //         src={session.user.image ?? ""}
+  //         alt="User Avatar"
+  //         className="size-6 rounded-full"
+  //       />
+  //       <SignOutWithLinkedIn />
+  //     </>
+  //   );
+  // }
 
   return (
     <div className="text-sm flex gap-2 text-slate-400 items-center">{node}</div>

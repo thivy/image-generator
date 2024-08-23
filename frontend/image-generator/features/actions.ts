@@ -1,5 +1,4 @@
 "use server";
-import { auth } from "@/auth";
 import { CosmosClient } from "@azure/cosmos";
 import { QueueServiceClient } from "@azure/storage-queue";
 import { nanoid } from "nanoid";
@@ -23,15 +22,6 @@ export async function generateImage(
     };
   }
 
-  const session = await auth();
-
-  if (session === null || session.user === undefined) {
-    return {
-      id: "",
-      error: "You must be signed in to generate an image",
-    };
-  }
-
   const connection = process.env.AZURE_STORAGE_CONNECTION_STRING!;
   const queueServiceClient =
     QueueServiceClient.fromConnectionString(connection);
@@ -41,7 +31,7 @@ export async function generateImage(
   const input: ImageEntry = {
     userPrompt: prompt,
     status: "Pending",
-    userId: session.user.name!,
+    userId: "user",
     id: nanoid(),
     imagePrompt: "",
   };
@@ -53,7 +43,7 @@ export async function generateImage(
   const encodedMessageString = Buffer.from(encodedMessage).toString("base64");
 
   await saveImageEntry(input);
-  // await queueClient.sendMessage(encodedMessageString);
+  await queueClient.sendMessage(encodedMessageString);
 
   if (input.id) {
     redirect(`/image/${input.id}`);
