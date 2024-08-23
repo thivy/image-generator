@@ -34,7 +34,7 @@ namespace GenerateImage.Services
         {
             Database database = await _cosmosClient.CreateDatabaseIfNotExistsAsync("stu-kickoff");
             Container container = await database.CreateContainerIfNotExistsAsync("image-entry", "/userId");
-            QueryDefinition queryDefinition = new QueryDefinition($"SELECT TOP {topCount} * FROM c WHERE c.status = 'Pending' or c.status = 'Error' ORDER BY c._ts ASC");
+            QueryDefinition queryDefinition = new QueryDefinition($"SELECT TOP {topCount} * FROM c WHERE c.status = 'Error' ORDER BY c._ts ASC");
             FeedIterator<ImageEntry> feedIterator = container.GetItemQueryIterator<ImageEntry>(queryDefinition);
 
             List<ImageEntry> imageEntries = new List<ImageEntry>();
